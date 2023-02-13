@@ -1,5 +1,3 @@
-// click or enter => get data => (loader => fetcher then indicatorChanger)
-
 const input = document.querySelector("#client-input");
 const searchButton = document.querySelector(".search-button");
 const indicator = document.querySelector(".indicator");
