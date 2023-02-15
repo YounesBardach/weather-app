@@ -1,5 +1,4 @@
-// modules
-
+import { fetcher, urls, processCityData, getCityData } from "./data-manipulation";
 import "sanitize.css";
 import "sanitize.css/forms.css";
 import "sanitize.css/assets.css";
@@ -23,14 +22,9 @@ const weatherDescriptor = document.querySelector(".weather-descriptor");
 const humidity = document.querySelector(".humidity");
 const wind = document.querySelector(".wind");
 const date = document.querySelector(".date");
-const urls = [
-  `https://api.giphy.com/v1/gifs/6036p0cTnjUrNFpAlr?api_key=IM6ETQ3CllUBuqsSyQiIDieJnB2LXUCC`,
-];
-
-const fetcher = (url) => fetch(url).then((response) => response.json());
 
 const iconChanger = (url) => {
-  if (url === urls[4]) {
+  if (url === `https://api.giphy.com/v1/gifs/8L0Pky6C83SzkzU55a?api_key=IM6ETQ3CllUBuqsSyQiIDieJnB2LXUCC`) {
     informationCard.style.backgroundSize = "70%";
   } else {
     informationCard.style.backgroundSize = "cover";
@@ -48,18 +42,25 @@ const informationsChanger = (processedCityWeatherData) => {
   nightTemperature.textContent = processedCityWeatherData.nightTemp;
   humidity.textContent = processedCityWeatherData.humidity;
   wind.textContent = processedCityWeatherData.wind;
+
+  return processedCityWeatherData.weather;
 };
 
 const colorChanger = (color1, color2, color3) => {
-
   header.style.backgroundColor = `${color1}`;
   informationContainer.style.backgroundColor = `${color2}`;
   footer.style.backgroundColor = `${color3}`;
 };
 
 const moodSelector = (processedCityWeatherDescription) => {
-  console.log(processedCityWeatherDescription);
   const weatherPersona = [
+    {
+      description: "No data",
+      id: "8L0Pky6C83SzkzU55a",
+      color1: "darkseagreen",
+      color2: "white",
+      color3: "darkseagreen",
+    },
     {
       description: "Clear",
       id: "loUqCMSfXHcsVb3cUZ",
@@ -173,7 +174,6 @@ const moodSelector = (processedCityWeatherDescription) => {
       )
     ].id;
   urls[3] = `https://api.giphy.com/v1/gifs/${weatherLogo}?api_key=IM6ETQ3CllUBuqsSyQiIDieJnB2LXUCC`;
-  iconChanger(urls[3]);
   const weatherColor1 =
     weatherPersona[
       weatherPersona.findIndex(
@@ -192,58 +192,28 @@ const moodSelector = (processedCityWeatherDescription) => {
         (element) => element.description === processedCityWeatherDescription
       )
     ].color3;
-    colorChanger(weatherColor1, weatherColor2, weatherColor3)
+
+  iconChanger(urls[3]);
+  colorChanger(weatherColor1, weatherColor2, weatherColor3);
 };
 
-const processCityData = (rawCityWeatherData) => {
-  console.log(rawCityWeatherData);
-  const processedCityWeatherData = {
-    city: rawCityWeatherData.name,
-    temperature: `${rawCityWeatherData.main.temp} K`,
-    weather: rawCityWeatherData.weather[0].main,
-    dayTemp: `Day ${rawCityWeatherData.main.temp_max} K`,
-    nightTemp: `Night ${rawCityWeatherData.main.temp_min} K`,
-    humidity: `${rawCityWeatherData.main.humidity} %`,
-    wind: `${rawCityWeatherData.wind.speed} m/s`,
-  };
-  moodSelector(processedCityWeatherData.weather);
-  informationsChanger(processedCityWeatherData);
-};
-
-const getCityData = () => {
-  Promise.resolve(iconChanger(urls[0]))
-    .then(() => fetcher(urls[1]))
-    .then((cityNameData) => {
-      urls[2] = `https://api.openweathermap.org/data/2.5/weather?lat=${cityNameData["0"].lat}&lon=${cityNameData["0"].lon}&appid=03923b23af6d02daed9f1c90b95acfc8`;
-      return fetcher(urls[2]);
-    })
-    .then((rawCityWeatherData) => {
-      processCityData(rawCityWeatherData);
-    })
-    .catch((error) => {
-      console.log(error);
-      urls[4] = `https://api.giphy.com/v1/gifs/8L0Pky6C83SzkzU55a?api_key=IM6ETQ3CllUBuqsSyQiIDieJnB2LXUCC`;
-      const ErrorWeatherData = {
-        city: `Couldn't find that city in our database`,
-        temperature: `No data`,
-        weather: `No data`,
-        dayTemp: `No data`,
-        nightTemp: `No data`,
-        humidity: `No data`,
-        wind: `No data`,
-        color: `black`,
-      };
-      iconChanger(urls[4]);
-      informationsChanger(ErrorWeatherData);
-      colorChanger(`darkseagreen`, `white`, `darkseagreen`)
-    });
+const pageUpdater = (url) => {
+  getCityData(url)
+    .then((rawCityWeatherData) => processCityData(rawCityWeatherData))
+    .then((processedCityWeatherData) =>
+      informationsChanger(processedCityWeatherData)
+    )
+    .then((processedCityWeatherDataDescription) =>
+      moodSelector(processedCityWeatherDataDescription)
+    );
 };
 
 const userDemand = (e) => {
   if (e.key === "Enter" || e.type === "click") {
     if (input.value !== "") {
+      iconChanger(urls[0]);
       urls[1] = `http://api.openweathermap.org/geo/1.0/direct?q=${input.value}&appid=03923b23af6d02daed9f1c90b95acfc8`;
-      getCityData();
+      pageUpdater(urls[1]);
     }
   }
 };
@@ -256,7 +226,8 @@ const dateToday = () => {
 };
 
 window.addEventListener("load", () => {
-  urls[1] = `http://api.openweathermap.org/geo/1.0/direct?q=Rabat&appid=03923b23af6d02daed9f1c90b95acfc8`;
   dateToday();
-  getCityData();
+  iconChanger(urls[0]);
+  urls[1] = `http://api.openweathermap.org/geo/1.0/direct?q=Rabat&appid=03923b23af6d02daed9f1c90b95acfc8`;
+  pageUpdater(urls[1]);
 });

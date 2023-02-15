@@ -57,7 +57,7 @@ body {
   border-width: 0;
   background-color: lightgray;
   width: 400px;
-  height: 20px;
+  height: 35px;
 }
 
 #client-input:focus {
