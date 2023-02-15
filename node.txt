@@ -222,3 +222,5 @@ https://github.com/csstools/sanitize.css (npm install sanitize.css --save)
 https://lodash.com/
 https://github.com/date-fns/date-fns
 https://github.com/jantimon/favicons-webpack-plugin
+
+Push subtree: git subtree push --prefix dist origin gh-pages (after pushing whole project)
