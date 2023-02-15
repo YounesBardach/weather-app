@@ -240,7 +240,7 @@ const userDemand = (e) => {
   if (e.key === "Enter" || e.type === "click") {
     if (domPositions.input.value !== "") {
       iconChanger(urls[0]);
-      urls[1] = `http://api.openweathermap.org/geo/1.0/direct?q=${domPositions.input.value}&appid=03923b23af6d02daed9f1c90b95acfc8`;
+      urls[1] = `https://api.openweathermap.org/geo/1.0/direct?q=${domPositions.input.value}&appid=03923b23af6d02daed9f1c90b95acfc8`;
       pageUpdater(urls[1]);
     }
   }
@@ -256,7 +256,7 @@ const EventAdder = () => {
   window.addEventListener("load", () => {
     dateToday();
     iconChanger(urls[0]);
-    urls[1] = `http://api.openweathermap.org/geo/1.0/direct?q=Rabat&appid=03923b23af6d02daed9f1c90b95acfc8`;
+    urls[1] = `https://api.openweathermap.org/geo/1.0/direct?q=Rabat&appid=03923b23af6d02daed9f1c90b95acfc8`;
     pageUpdater(urls[1]);
   });
 };
