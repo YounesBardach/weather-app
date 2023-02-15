@@ -1,0 +1,224 @@
+Create json: npm init -y or npm init (final result below):
+
+{
+  "name": "todo-list",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "webpack --watch",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YounesBardach/todo-list.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/YounesBardach/todo-list/issues"
+  },
+  "homepage": "https://github.com/YounesBardach/todo-list#readme",
+  "devDependencies": {
+    "css-loader": "^6.7.1",
+    "date-fns": "^2.29.1",
+    "favicons": "^7.0.0-beta.4",
+    "favicons-webpack-plugin": "^5.0.2",
+    "html-webpack-plugin": "^5.5.0",
+    "style-loader": "^3.3.1",
+    "webpack": "^5.73.0",
+    "webpack-cli": "^4.10.0"
+  }
+}
+
+//
+
+Install webpack: npm install webpack webpack-cli --save-dev
+
+//
+
+Creat .gitignore and add node_modules/ to it
+
+//
+
+Make package private and prevent an accidental publish code (json):
+
+  -"main": "index.js",
+  +"private": true,
+
+Create src/, structure in src/ and dist/
+
+//
+
+Create webpack.config.js (first and final below)
+
+- First:
+
+webpack.config.js
+
+const path = require('path');
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'main.js',
+    path: path.resolve(__dirname, 'dist'),
+  },
+};
+
+- Final:
+
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+
+module.exports = {
+  mode: "development",
+  devtool: "inline-source-map",
+  entry: {
+    index: "./src/index.js",
+  },
+  output: {
+    filename: "[name].bundle.js",
+    path: path.resolve(__dirname, "dist"),
+    assetModuleFilename: "images/[hash][ext][query]",
+    clean: true,
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"],
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: "asset/resource",
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/i,
+        type: "asset/resource",
+        generator: {
+          filename: "fonts/[hash][ext][query]",
+        },
+      },
+    ],
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: "./src/index.html",
+    }),
+  ],
+};
+
+//
+
+Add watch mode (npm run watch), npm run build webpack shortcut (see json):
+
+"test": "echo \"Error: no test specified\" && exit 1",
++ "watch mode (npm run watch)
++ "build": "webpack"
+
+//
+
+Add devmode, inline source map, dist cleaning (see webpack config)
+webpack-dev-server: https://webpack.js.org/guides/development/
+
+//
+
+Multiple entries (see webpack config): https://webpack.js.org/guides/output-management/
+
+//
+
+Install css loader (see webpack config): npm install --save-dev style-loader css-loader
+Install htmlwebpackplugin (see webpack config): npm install --save-dev html-webpack-plugin
+
+Run command with --force or --legacy-peer-deps if ERESOLVE ERROR
+
+//
+
+Install ESLint:
+
+(https://www.digitalocean.com/community/tutorials/linting-and-formatting-with-eslint-in-vs-code)
+
+Global (once): npm install eslint --location=global
+Local (useful for collab): npm install eslint --save-dev
+Initiate: npm init @eslint/config
+Add formating on save:
+
+- Open: Preferences: Open Workspace Settings (JSON)
+- Add:
+
+"editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "eslint.validate": [
+        "javascript"
+    ]
+
+Add console.log rule (eslintrc.json):
+
+"rules" : {
+    "no-console": "off"
+}
+
+//
+
+Install Prettier (local):
+
+Install: npm install --save-dev --save-exact prettier
+Config file: echo {}> .prettierrc.json
+Create a .prettierignore and base it on .gitignore
+
+//
+
+Install eslint-config-prettier(local): npm install --save-dev eslint-config-prettier
+Add "prettier" to "extends"(eslintrc.json) in last position:
+
+"extends": [
+    "some-other-config-you-use",
+    "prettier"
+  ]
+
+Check for conflicting rules in a file (https://github.com/prettier/eslint-config-prettier#cli-helper-tool):
+
+npx eslint-config-prettier src/index.js
+
+//
+
+Move config files to root
+
+//
+
+Babel (for old browsers or testing new JS features):
+
+Install: npm install -D babel-loader @babel/core @babel/preset-env webpack
+Add module(webpack.config):
+
+{
+      test: /\.m?js$/,
+      exclude: /node_modules/,
+      use: {
+        loader: 'babel-loader',
+        options: {
+          presets: [
+            ['@babel/preset-env', { targets: "defaults" }]
+          ]
+        }
+      }
+    }
+
+Add supported browsers(json):
+
+"browserslist": [
+    "defaults"
+  ]
+
+//
+
+Useful libraries:
+
+https://github.com/csstools/sanitize.css (npm install sanitize.css --save)
+https://lodash.com/
+https://github.com/date-fns/date-fns
+https://github.com/jantimon/favicons-webpack-plugin
