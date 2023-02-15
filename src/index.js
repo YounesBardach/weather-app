@@ -1,4 +1,9 @@
-import { fetcher, urls, processCityData, getCityData } from "./data-manipulation";
+import {
+  fetcher,
+  urls,
+  processCityData,
+  getCityData,
+} from "./data-manipulation";
 import "sanitize.css";
 import "sanitize.css/forms.css";
 import "sanitize.css/assets.css";
@@ -8,48 +13,71 @@ import "sanitize.css/system-ui.css";
 import "sanitize.css/ui-monospace.css";
 import "./index.css";
 
-const input = document.querySelector("#client-input");
-const searchButton = document.querySelector(".search-button");
-const header = document.querySelector(".header-container");
-const footer = document.querySelector("footer");
-const informationContainer = document.querySelector(".information-container");
-const informationCard = document.querySelector(".information-card");
-const cityTitle = document.querySelector(".city-title");
-const temperature = document.querySelector(".temperature");
-const dayTemperature = document.querySelector(".day-temperature");
-const nightTemperature = document.querySelector(".night-temperature");
-const weatherDescriptor = document.querySelector(".weather-descriptor");
-const humidity = document.querySelector(".humidity");
-const wind = document.querySelector(".wind");
-const date = document.querySelector(".date");
+const domPositions = (() => {
+  const input = document.querySelector("#client-input");
+  const searchButton = document.querySelector(".search-button");
+  const header = document.querySelector(".header-container");
+  const footer = document.querySelector("footer");
+  const informationContainer = document.querySelector(".information-container");
+  const informationCard = document.querySelector(".information-card");
+  const cityTitle = document.querySelector(".city-title");
+  const temperature = document.querySelector(".temperature");
+  const dayTemperature = document.querySelector(".day-temperature");
+  const nightTemperature = document.querySelector(".night-temperature");
+  const weatherDescriptor = document.querySelector(".weather-descriptor");
+  const humidity = document.querySelector(".humidity");
+  const wind = document.querySelector(".wind");
+  const date = document.querySelector(".date");
+
+  return {
+    input,
+    searchButton,
+    header,
+    footer,
+    informationContainer,
+    informationCard,
+    cityTitle,
+    temperature,
+    dayTemperature,
+    nightTemperature,
+    weatherDescriptor,
+    humidity,
+    wind,
+    date,
+  };
+})();
 
 const iconChanger = (url) => {
-  if (url === `https://api.giphy.com/v1/gifs/8L0Pky6C83SzkzU55a?api_key=IM6ETQ3CllUBuqsSyQiIDieJnB2LXUCC`) {
-    informationCard.style.backgroundSize = "70%";
+  if (
+    url ===
+    `https://api.giphy.com/v1/gifs/8L0Pky6C83SzkzU55a?api_key=IM6ETQ3CllUBuqsSyQiIDieJnB2LXUCC`
+  ) {
+    domPositions.informationCard.style.backgroundSize = "70%";
   } else {
-    informationCard.style.backgroundSize = "cover";
+    domPositions.informationCard.style.backgroundSize = "cover";
   }
   fetcher(url).then((data) => {
-    informationCard.style.backgroundImage = `url(${data.data.images.downsized.url})`;
+    domPositions.informationCard.style.backgroundImage = `url(${data.data.images.downsized.url})`;
   });
 };
 
 const informationsChanger = (processedCityWeatherData) => {
-  cityTitle.textContent = processedCityWeatherData.city;
-  temperature.textContent = processedCityWeatherData.temperature;
-  weatherDescriptor.textContent = processedCityWeatherData.weather;
-  dayTemperature.textContent = processedCityWeatherData.dayTemp;
-  nightTemperature.textContent = processedCityWeatherData.nightTemp;
-  humidity.textContent = processedCityWeatherData.humidity;
-  wind.textContent = processedCityWeatherData.wind;
+  domPositions.cityTitle.textContent = processedCityWeatherData.city;
+  domPositions.temperature.textContent = processedCityWeatherData.temperature;
+  domPositions.weatherDescriptor.textContent = processedCityWeatherData.weather;
+  domPositions.dayTemperature.textContent = processedCityWeatherData.dayTemp;
+  domPositions.nightTemperature.textContent =
+    processedCityWeatherData.nightTemp;
+  domPositions.humidity.textContent = processedCityWeatherData.humidity;
+  domPositions.wind.textContent = processedCityWeatherData.wind;
 
   return processedCityWeatherData.weather;
 };
 
 const colorChanger = (color1, color2, color3) => {
-  header.style.backgroundColor = `${color1}`;
-  informationContainer.style.backgroundColor = `${color2}`;
-  footer.style.backgroundColor = `${color3}`;
+  domPositions.header.style.backgroundColor = `${color1}`;
+  domPositions.informationContainer.style.backgroundColor = `${color2}`;
+  domPositions.footer.style.backgroundColor = `${color3}`;
 };
 
 const moodSelector = (processedCityWeatherDescription) => {
@@ -210,24 +238,27 @@ const pageUpdater = (url) => {
 
 const userDemand = (e) => {
   if (e.key === "Enter" || e.type === "click") {
-    if (input.value !== "") {
+    if (domPositions.input.value !== "") {
       iconChanger(urls[0]);
-      urls[1] = `http://api.openweathermap.org/geo/1.0/direct?q=${input.value}&appid=03923b23af6d02daed9f1c90b95acfc8`;
+      urls[1] = `http://api.openweathermap.org/geo/1.0/direct?q=${domPositions.input.value}&appid=03923b23af6d02daed9f1c90b95acfc8`;
       pageUpdater(urls[1]);
     }
   }
 };
 
-input.addEventListener("keyup", (e) => userDemand(e));
-searchButton.addEventListener("click", (e) => userDemand(e));
-
 const dateToday = () => {
-  date.textContent = new Date().toDateString();
+  domPositions.date.textContent = new Date().toDateString();
 };
 
-window.addEventListener("load", () => {
-  dateToday();
-  iconChanger(urls[0]);
-  urls[1] = `http://api.openweathermap.org/geo/1.0/direct?q=Rabat&appid=03923b23af6d02daed9f1c90b95acfc8`;
-  pageUpdater(urls[1]);
-});
+const EventAdder = () => {
+  domPositions.input.addEventListener("keyup", (e) => userDemand(e));
+  domPositions.searchButton.addEventListener("click", (e) => userDemand(e));
+  window.addEventListener("load", () => {
+    dateToday();
+    iconChanger(urls[0]);
+    urls[1] = `http://api.openweathermap.org/geo/1.0/direct?q=Rabat&appid=03923b23af6d02daed9f1c90b95acfc8`;
+    pageUpdater(urls[1]);
+  });
+};
+
+EventAdder();
